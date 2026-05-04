@@ -28,6 +28,10 @@ dependencies {
         // Add plugin dependencies for compilation here:
         bundledPlugin("org.jetbrains.kotlin")
     }
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation("org.json:json:20240303")
+    implementation("com.openai:openai-java:4.0.0")
 }
 
 intellijPlatform {

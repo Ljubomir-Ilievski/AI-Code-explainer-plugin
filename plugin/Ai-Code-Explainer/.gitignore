@@ -2,3 +2,6 @@
 .idea
 .intellijPlatform
 build
+/.run/Run IDE with Plugin.run.xml
+.run
+.env

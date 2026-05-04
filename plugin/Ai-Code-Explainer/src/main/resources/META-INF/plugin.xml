@@ -32,10 +32,11 @@
         <supportsKotlinPluginMode supportsK2="true"/>
     </extensions>
     <actions>
-        <action id="com.ilievski.ai.plugin.TestAction" class="com.ilievski.ai.plugin.TestAction" text="TestingAction"
+        <action id="com.ilievski.ai.plugin.MainAction" class="com.ilievski.ai.plugin.MainAction" text="TestingAction"
                 description="SayHello"
         >
             <add-to-group group-id="ToolsMenu" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt E"/>
         </action>
     </actions>
 </idea-plugin>
