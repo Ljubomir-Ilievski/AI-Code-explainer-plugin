@@ -1,27 +1,58 @@
 package com.ilievski.ai.plugin.ui
 
-import com.intellij.openapi.ui.DialogWrapper
 import java.awt.BorderLayout
-import javax.swing.JComponent
+import javax.swing.JDialog
+import javax.swing.JFrame
+import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
+import javax.swing.UIManager
 
-class ExplainDialog(private val text: String) : DialogWrapper(true) {
+class ExplainDialog : JDialog() {
+
+    private val containerPanel = JPanel(BorderLayout())
+    private val loadingLabel = JLabel("Generating explanation...", UIManager.getIcon("OptionPane.informationIcon"), JLabel.CENTER)
+    private val responseTextArea = JTextArea()
 
     init {
-        init()
         title = "AI Code Explanation"
+        defaultCloseOperation = DISPOSE_ON_CLOSE
+        setSize(700, 450)
+        setLocationRelativeTo(null)
+
+        responseTextArea.isEditable = false
+
+        contentPane.layout = BorderLayout()
+        contentPane.add(containerPanel, BorderLayout.CENTER)
+
+        showLoading()
     }
 
-    override fun createCenterPanel(): JComponent {
-        val panel = JPanel(BorderLayout())
+    private fun showLoading() {
+        containerPanel.removeAll()
+        containerPanel.add(loadingLabel, BorderLayout.CENTER)
+        containerPanel.revalidate()
+        containerPanel.repaint()
+    }
 
-        val textArea = JTextArea(text)
-        textArea.isEditable = false
+    fun showExplanation(text: String) {
+        responseTextArea.text = text
+        responseTextArea.caretPosition = 0
 
-        panel.add(JScrollPane(textArea), BorderLayout.CENTER)
+        containerPanel.removeAll()
+        containerPanel.add(JScrollPane(responseTextArea), BorderLayout.CENTER)
+        containerPanel.revalidate()
+        containerPanel.repaint()
+    }
 
-        return panel
+    override fun setVisible(visible: Boolean) {
+        if (visible && owner == null) {
+            val activeWindow = JFrame.getFrames().firstOrNull { it.isActive }
+            if (activeWindow != null) {
+                setLocationRelativeTo(activeWindow)
+            }
+        }
+        super.setVisible(visible)
     }
 }
