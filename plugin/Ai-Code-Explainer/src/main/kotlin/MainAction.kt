@@ -5,10 +5,14 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.ui.Messages
 import org.jetbrains.annotations.NotNull
 import com.ilievski.ai.plugin.ai.AiModel
 import com.ilievski.ai.plugin.ai.OpenAIResponsesProvider
+import com.ilievski.ai.plugin.settings.ApiKeyStorage
+import com.ilievski.ai.plugin.settings.PluginSettingsConfigurable
+import com.ilievski.ai.plugin.settings.PluginSettingsState
 import com.ilievski.ai.plugin.service.ExplainService
 import com.ilievski.ai.plugin.ui.ExplainDialog
 import javax.swing.SwingUtilities
@@ -16,7 +20,8 @@ import javax.swing.SwingUtilities
 
 class MainAction : AnAction() {
     private val explainService = ExplainService()
-    private val defaultModel = OpenAIResponsesProvider.MODELS.first()
+    private val apiKeyStorage = ApiKeyStorage()
+    private val settingsState = PluginSettingsState.getInstance()
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.EDT
 
@@ -36,21 +41,57 @@ class MainAction : AnAction() {
             return
         }
 
+        val apiKey = apiKeyStorage.getApiKey()
+        if (apiKey.isNullOrBlank()) {
+            val result = Messages.showOkCancelDialog(
+                event.project,
+                "No API key found. Please add your OpenAI API key in plugin settings.",
+                "AI Code Explainer",
+                "Open Settings",
+                "Cancel",
+                Messages.getInformationIcon()
+            )
+            if (result == Messages.OK) {
+                ShowSettingsUtil.getInstance().showSettingsDialog(event.project, PluginSettingsConfigurable::class.java)
+            }
+            return
+        }
+
+        val defaultModel = OpenAIResponsesProvider.MODELS.firstOrNull { it.id == settingsState.defaultModelId }
+            ?: OpenAIResponsesProvider.MODELS.first()
+
         lateinit var dialog: ExplainDialog
         dialog = ExplainDialog(
             models = OpenAIResponsesProvider.MODELS,
             initialModel = defaultModel
         ) { selectedModel ->
-            requestExplanation(selectedText, dialog, selectedModel)
+            requestExplanation(event.project, selectedText, dialog, selectedModel)
         }
         dialog.isVisible = true
-        requestExplanation(selectedText, dialog, defaultModel)
+        requestExplanation(event.project, selectedText, dialog, defaultModel)
     }
 
-    private fun requestExplanation(selectedText: String, dialog: ExplainDialog, model: AiModel) {
+    private fun requestExplanation(project: com.intellij.openapi.project.Project?, selectedText: String, dialog: ExplainDialog, model: AiModel) {
+        val apiKey = apiKeyStorage.getApiKey()
+        if (apiKey.isNullOrBlank()) {
+            val result = Messages.showOkCancelDialog(
+                dialog,
+                "No API key found. Please add your OpenAI API key in plugin settings.",
+                "AI Code Explainer",
+                "Open Settings",
+                "Cancel",
+                Messages.getInformationIcon()
+            )
+            if (result == Messages.OK) {
+                ShowSettingsUtil.getInstance().showSettingsDialog(project, PluginSettingsConfigurable::class.java)
+            }
+            return
+        }
+
+        settingsState.defaultModelId = model.id
         dialog.showLoadingState()
         ApplicationManager.getApplication().executeOnPooledThread {
-            val explanation = explainService.explain(selectedText, model)
+            val explanation = explainService.explain(selectedText, model, apiKey)
             SwingUtilities.invokeLater {
                 if (dialog.isDisplayable) {
                     dialog.showExplanation(explanation)

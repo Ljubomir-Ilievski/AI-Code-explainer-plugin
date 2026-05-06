@@ -27,6 +27,10 @@
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow id="MyToolWindow" factoryClass="com.ilievski.ai.plugin.MyToolWindowFactory"
                     icon="AllIcons.Toolwindows.ToolWindowPalette"/>
+        <applicationConfigurable
+                id="com.ilievski.ai.plugin.settings"
+                displayName="AI Code Explainer"
+                instance="com.ilievski.ai.plugin.settings.PluginSettingsConfigurable"/>
     </extensions>
     <extensions defaultExtensionNs="org.jetbrains.kotlin">
         <supportsKotlinPluginMode supportsK2="true"/>

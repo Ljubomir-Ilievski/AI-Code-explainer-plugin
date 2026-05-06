@@ -9,12 +9,7 @@ class AiClient(private val provider: AiProvider = OpenAIResponsesProvider()) {
 
     private val client = OkHttpClient()
 
-    fun explain(code: String, aiModel: AiModel): String {
-        val apiKey = System.getenv("OPENAI_API_KEY")
-
-        if (apiKey.isNullOrBlank()) {
-            return "Missing API key"
-        }
+    fun explain(code: String, aiModel: AiModel, apiKey: String): String {
 
         val body = provider.buildRequestBody(code, aiModel)
             .toRequestBody("application/json".toMediaTypeOrNull())

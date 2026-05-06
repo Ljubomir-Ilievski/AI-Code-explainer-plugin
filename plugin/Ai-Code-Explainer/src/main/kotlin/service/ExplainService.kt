@@ -8,7 +8,7 @@ class ExplainService {
 
     private val client = AiClient(OpenAIResponsesProvider())
 
-    fun explain(code: String, aiModel: AiModel): String {
-        return client.explain(code, aiModel)
+    fun explain(code: String, aiModel: AiModel, apiKey: String): String {
+        return client.explain(code, aiModel, apiKey)
     }
 }

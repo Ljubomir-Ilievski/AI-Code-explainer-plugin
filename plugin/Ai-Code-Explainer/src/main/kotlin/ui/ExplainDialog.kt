@@ -7,6 +7,7 @@ import javax.swing.JComboBox
 import javax.swing.JDialog
 import javax.swing.JFrame
 import javax.swing.JLabel
+import javax.swing.BoxLayout
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
@@ -32,6 +33,8 @@ class ExplainDialog(
 
     private val containerPanel = JPanel(BorderLayout())
     private val topPanel = JPanel()
+    private val modelPanel = JPanel()
+    private val defaultModelLabel = JLabel("Default model")
     private val loadingLabel = JLabel("Generating explanation...", UIManager.getIcon("OptionPane.informationIcon"), JLabel.CENTER)
     private val responseTextArea = JTextArea()
     private val modelSelector = JComboBox(models.toTypedArray())
@@ -48,7 +51,11 @@ class ExplainDialog(
         modelSelector.selectedItem = initialModel
         modelSelector.renderer = ModelCellRenderer()
 
-        topPanel.add(modelSelector)
+        modelPanel.layout = BoxLayout(modelPanel, BoxLayout.X_AXIS)
+        modelPanel.add(defaultModelLabel)
+        modelPanel.add(modelSelector)
+
+        topPanel.add(modelPanel)
         topPanel.add(askAgainButton)
 
         askAgainButton.addActionListener {
