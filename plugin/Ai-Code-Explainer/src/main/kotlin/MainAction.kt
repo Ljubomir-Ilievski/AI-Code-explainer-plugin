@@ -9,7 +9,7 @@ import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.ui.Messages
 import org.jetbrains.annotations.NotNull
 import com.ilievski.ai.plugin.ai.AiModel
-import com.ilievski.ai.plugin.ai.OpenAIResponsesProvider
+import com.ilievski.ai.plugin.ai.GroqChatCompletionsProvider
 import com.ilievski.ai.plugin.settings.ApiKeyStorage
 import com.ilievski.ai.plugin.settings.PluginSettingsConfigurable
 import com.ilievski.ai.plugin.settings.PluginSettingsState
@@ -45,7 +45,7 @@ class MainAction : AnAction() {
         if (apiKey.isNullOrBlank()) {
             val result = Messages.showOkCancelDialog(
                 event.project,
-                "No API key found. Please add your OpenAI API key in plugin settings.",
+                "No API key found. Please add your Groq API key in plugin settings.",
                 "AI Code Explainer",
                 "Open Settings",
                 "Cancel",
@@ -57,12 +57,12 @@ class MainAction : AnAction() {
             return
         }
 
-        val defaultModel = OpenAIResponsesProvider.MODELS.firstOrNull { it.id == settingsState.defaultModelId }
-            ?: OpenAIResponsesProvider.MODELS.first()
+        val defaultModel = GroqChatCompletionsProvider.MODELS.firstOrNull { it.id == settingsState.defaultModelId }
+            ?: GroqChatCompletionsProvider.MODELS.first()
 
         lateinit var dialog: ExplainDialog
         dialog = ExplainDialog(
-            models = OpenAIResponsesProvider.MODELS,
+            models = GroqChatCompletionsProvider.MODELS,
             initialModel = defaultModel
         ) { selectedModel ->
             requestExplanation(event.project, selectedText, dialog, selectedModel)
@@ -76,7 +76,7 @@ class MainAction : AnAction() {
         if (apiKey.isNullOrBlank()) {
             val result = Messages.showOkCancelDialog(
                 dialog,
-                "No API key found. Please add your OpenAI API key in plugin settings.",
+                "No API key found. Please add your Groq API key in plugin settings.",
                 "AI Code Explainer",
                 "Open Settings",
                 "Cancel",

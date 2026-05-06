@@ -5,7 +5,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 
-class AiClient(private val provider: AiProvider = OpenAIResponsesProvider()) {
+class AiClient(private val provider: AiProvider = GroqChatCompletionsProvider()) {
 
     private val client = OkHttpClient()
 

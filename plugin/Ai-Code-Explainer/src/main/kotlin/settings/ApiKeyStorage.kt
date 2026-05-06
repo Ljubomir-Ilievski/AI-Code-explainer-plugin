@@ -7,8 +7,8 @@ import com.intellij.ide.passwordSafe.PasswordSafe
 class ApiKeyStorage {
 
     companion object {
-        private const val SERVICE_NAME = "AI Code Explainer OpenAI API Key"
-        private const val USER_NAME = "openai"
+        private const val SERVICE_NAME = "AI Code Explainer Groq API Key"
+        private const val USER_NAME = "groq"
     }
 
     private val attributes = CredentialAttributes(SERVICE_NAME, USER_NAME)
