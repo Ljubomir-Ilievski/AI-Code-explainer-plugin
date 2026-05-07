@@ -7,19 +7,19 @@ import com.intellij.ide.passwordSafe.PasswordSafe
 class ApiKeyStorage {
 
     companion object {
-        private const val SERVICE_NAME = "AI Code Explainer Groq API Key"
-        private const val USER_NAME = "groq"
+        private const val SERVICE_NAME_PREFIX = "AI Code Explainer API Key"
+        private const val CREDENTIAL_USER = "api-key"
     }
 
-    private val attributes = CredentialAttributes(SERVICE_NAME, USER_NAME)
+    private fun attributesFor(id: String): CredentialAttributes = CredentialAttributes("$SERVICE_NAME_PREFIX:$id")
 
-    fun getApiKey(): String? {
-        return PasswordSafe.instance.get(attributes)?.getPasswordAsString()?.trim().takeUnless { it.isNullOrBlank() }
+    fun getApiKey(id: String): String? {
+        return PasswordSafe.instance.get(attributesFor(id))?.getPasswordAsString()?.trim().takeUnless { it.isNullOrBlank() }
     }
 
-    fun setApiKey(apiKey: String?) {
+    fun setApiKey(id: String, apiKey: String?) {
         val normalized = apiKey?.trim().orEmpty()
-        val credentials = if (normalized.isBlank()) null else Credentials(USER_NAME, normalized)
-        PasswordSafe.instance.set(attributes, credentials)
+        val credentials = if (normalized.isBlank()) null else Credentials(CREDENTIAL_USER, normalized)
+        PasswordSafe.instance.set(attributesFor(id), credentials)
     }
 }

@@ -8,8 +8,8 @@ class GroqChatCompletionsProvider(
 
     companion object {
         val MODELS = listOf(
-            AiModel("llama-3.1-8b-instant", "Llama 3.1 8B (instant)"),
-            AiModel("llama-3.3-70b-versatile", "Llama 3.3 70B (versatile)")
+            AiModel("llama-3.1-8b-instant", "Llama 3.1 8B (instant)", "groq", "groq"),
+            AiModel("llama-3.3-70b-versatile", "Llama 3.3 70B (versatile)", "groq", "groq")
         )
     }
 

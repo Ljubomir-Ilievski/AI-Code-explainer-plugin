@@ -8,8 +8,8 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.ui.Messages
 import org.jetbrains.annotations.NotNull
+import com.ilievski.ai.plugin.ai.AiProviderRegistry
 import com.ilievski.ai.plugin.ai.AiModel
-import com.ilievski.ai.plugin.ai.GroqChatCompletionsProvider
 import com.ilievski.ai.plugin.settings.ApiKeyStorage
 import com.ilievski.ai.plugin.settings.PluginSettingsConfigurable
 import com.ilievski.ai.plugin.settings.PluginSettingsState
@@ -22,6 +22,7 @@ class MainAction : AnAction() {
     private val explainService = ExplainService()
     private val apiKeyStorage = ApiKeyStorage()
     private val settingsState = PluginSettingsState.getInstance()
+    private val availableModels = AiProviderRegistry.models
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.EDT
 
@@ -41,28 +42,12 @@ class MainAction : AnAction() {
             return
         }
 
-        val apiKey = apiKeyStorage.getApiKey()
-        if (apiKey.isNullOrBlank()) {
-            val result = Messages.showOkCancelDialog(
-                event.project,
-                "No API key found. Please add your Groq API key in plugin settings.",
-                "AI Code Explainer",
-                "Open Settings",
-                "Cancel",
-                Messages.getInformationIcon()
-            )
-            if (result == Messages.OK) {
-                ShowSettingsUtil.getInstance().showSettingsDialog(event.project, PluginSettingsConfigurable::class.java)
-            }
-            return
-        }
-
-        val defaultModel = GroqChatCompletionsProvider.MODELS.firstOrNull { it.id == settingsState.defaultModelId }
-            ?: GroqChatCompletionsProvider.MODELS.first()
+        val defaultModel = availableModels.firstOrNull { it.id == settingsState.defaultModelId }
+            ?: availableModels.first()
 
         lateinit var dialog: ExplainDialog
         dialog = ExplainDialog(
-            models = GroqChatCompletionsProvider.MODELS,
+            models = availableModels,
             initialModel = defaultModel
         ) { selectedModel ->
             requestExplanation(event.project, selectedText, dialog, selectedModel)
@@ -72,11 +57,11 @@ class MainAction : AnAction() {
     }
 
     private fun requestExplanation(project: com.intellij.openapi.project.Project?, selectedText: String, dialog: ExplainDialog, model: AiModel) {
-        val apiKey = apiKeyStorage.getApiKey()
+        val apiKey = apiKeyStorage.getApiKey(model.apiKeyId)
         if (apiKey.isNullOrBlank()) {
             val result = Messages.showOkCancelDialog(
                 dialog,
-                "No API key found. Please add your Groq API key in plugin settings.",
+                "No API key found. Please add your ${model.apiKeyId} API key in plugin settings.",
                 "AI Code Explainer",
                 "Open Settings",
                 "Cancel",

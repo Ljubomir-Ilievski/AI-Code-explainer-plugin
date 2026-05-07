@@ -5,7 +5,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 
-class AiClient(private val provider: AiProvider = GroqChatCompletionsProvider()) {
+class AiClient(private val provider: AiProvider) {
 
     private val client = OkHttpClient()
 
@@ -14,11 +14,11 @@ class AiClient(private val provider: AiProvider = GroqChatCompletionsProvider())
         val body = provider.buildRequestBody(code, aiModel)
             .toRequestBody("application/json".toMediaTypeOrNull())
 
-        val request = Request.Builder()
-            .url(provider.endpoint)
-            .addHeader("Authorization", "Bearer $apiKey")
+        val requestBuilder = Request.Builder()
+            .url(provider.resolveEndpoint(aiModel))
             .post(body)
-            .build()
+        provider.applyAuthorization(requestBuilder, apiKey)
+        val request = requestBuilder.build()
 
         try {
             client.newCall(request).execute().use { response ->

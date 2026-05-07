@@ -5,14 +5,14 @@ import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
-import com.ilievski.ai.plugin.ai.GroqChatCompletionsProvider
+import com.ilievski.ai.plugin.ai.AiProviderRegistry
 
 @Service(Service.Level.APP)
 @State(name = "AiCodeExplainerSettings", storages = [Storage("aiCodeExplainer.xml")])
 class PluginSettingsState : PersistentStateComponent<PluginSettingsState.State> {
 
     data class State(
-        var defaultModelId: String = GroqChatCompletionsProvider.MODELS.first().id
+        var defaultModelId: String = AiProviderRegistry.models.first().id
     )
 
     private var state = State()
