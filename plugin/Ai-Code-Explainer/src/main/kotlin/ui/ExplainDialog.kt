@@ -3,7 +3,6 @@ package com.ilievski.ai.plugin.ui
 import com.ilievski.ai.plugin.ai.AiModel
 import java.awt.BorderLayout
 import javax.swing.JButton
-import javax.swing.JComboBox
 import javax.swing.JDialog
 import javax.swing.JEditorPane
 import javax.swing.JFrame
@@ -16,6 +15,7 @@ import javax.swing.UIManager
 import javax.swing.DefaultListCellRenderer
 import org.commonmark.parser.Parser
 import org.commonmark.renderer.html.HtmlRenderer
+import com.intellij.openapi.ui.ComboBox
 
 class ExplainDialog(
     models: List<AiModel>,
@@ -39,7 +39,7 @@ class ExplainDialog(
     private val defaultModelLabel = JLabel("Default model")
     private val loadingLabel = JLabel("Generating explanation...", UIManager.getIcon("OptionPane.informationIcon"), JLabel.CENTER)
     private val responsePane = JEditorPane()
-    private val modelSelector = JComboBox(models.toTypedArray())
+    private val modelSelector = ComboBox(models.toTypedArray())
     private val askAgainButton = JButton("Ask again")
     private val markdownParser = Parser.builder().build()
     private val htmlRenderer = HtmlRenderer.builder().build()

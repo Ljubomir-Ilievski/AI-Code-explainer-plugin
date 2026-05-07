@@ -5,4 +5,8 @@ data class AiModel(
     val displayName: String,
     val providerId: String,
     val apiKeyId: String
-)
+){
+    override fun toString(): String {
+        return "$displayName ($id) (${providerId})"
+    }
+}

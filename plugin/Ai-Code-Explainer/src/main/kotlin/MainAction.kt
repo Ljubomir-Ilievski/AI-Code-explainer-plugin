@@ -59,6 +59,7 @@ class MainAction : AnAction() {
     private fun requestExplanation(project: com.intellij.openapi.project.Project?, selectedText: String, dialog: ExplainDialog, model: AiModel) {
         val apiKey = apiKeyStorage.getApiKey(model.apiKeyId)
         if (apiKey.isNullOrBlank()) {
+            dialog.isVisible = false
             val result = Messages.showOkCancelDialog(
                 dialog,
                 "No API key found. Please add your ${model.apiKeyId} API key in plugin settings.",
