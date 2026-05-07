@@ -1,5 +1,6 @@
-package com.ilievski.ai.plugin.ai
+package com.ilievski.ai.plugin.ai.providers
 
+import com.ilievski.ai.plugin.ai.AiModel
 import okhttp3.Request
 
 interface AiProvider {

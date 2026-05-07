@@ -1,5 +1,9 @@
 package com.ilievski.ai.plugin.ai
 
+import com.ilievski.ai.plugin.ai.providers.AiProvider
+import com.ilievski.ai.plugin.ai.providers.GeminiGenerateContentProvider
+import com.ilievski.ai.plugin.ai.providers.GroqChatCompletionsProvider
+
 object AiProviderRegistry {
 
     private val providers = mapOf(

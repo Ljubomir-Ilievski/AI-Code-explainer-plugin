@@ -1,5 +1,7 @@
-package com.ilievski.ai.plugin.ai
+package com.ilievski.ai.plugin.ai.providers
 
+import com.ilievski.ai.plugin.ai.AiModel
+import org.json.JSONArray
 import org.json.JSONObject
 
 class GroqChatCompletionsProvider(
@@ -14,7 +16,7 @@ class GroqChatCompletionsProvider(
     }
 
     override fun buildRequestBody(code: String, aiModel: AiModel): String {
-        val messages = org.json.JSONArray()
+        val messages = JSONArray()
             .put(JSONObject().put("role", "system").put("content", "You explain source code clearly and concisely."))
             .put(JSONObject().put("role", "user").put("content", "Explain this code:\n$code"))
 

@@ -1,5 +1,6 @@
 package com.ilievski.ai.plugin.ai
 
+import com.ilievski.ai.plugin.ai.providers.AiProvider
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
